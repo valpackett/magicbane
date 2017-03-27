@@ -1,0 +1,7 @@
+.cabal-sandbox/
+.hpc/
+cabal.sandbox.config
+dist/
+tmp/
+*.tix
+.stack-work/
