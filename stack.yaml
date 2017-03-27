@@ -5,3 +5,5 @@ extra-deps:
   - wai-cli-0.1.1
   - refined-0.1.2.1
 resolver: lts-8.5
+
+pvp-bounds: both
