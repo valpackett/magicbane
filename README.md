@@ -16,7 +16,7 @@ In particular, Magicbane combines the following libraries:
 - [envy](https://www.stackage.org/package/envy) for configuration. [Store config in environment variables](https://12factor.net/config)!
 - [fast-logger](https://www.stackage.org/package/fast-logger)+[monad-logger](https://www.stackage.org/package/monad-logger) for logging. It works. It's fast. And it even lets you see what line of code produced a log message.
 - [EKG](https://www.stackage.org/package/ekg)+[monad-metrics](https://www.stackage.org/package/monad-metrics) for metrics. `monad-metrics` lets you easily measure things in your application: just use `label`/`counter`/`distribution`/`gauge`/`timed` in your handlers. The EKG ecosystem has backends for [InfluxDB](https://www.stackage.org/package/ekg-influxdb), [Carbon (Graphite)](https://www.stackage.org/package/ekg-carbon), [statsd](https://www.stackage.org/package/ekg-statsd), [Prometheus](https://www.stackage.org/package/ekg-prometheus-adapter) and others… And a simple local [web server](https://www.stackage.org/package/ekg-wai) for development.
-- [refined](http://nikita-volkov.github.io/refined/) for validation. Why use functions for input validation when you can use types? Magicbane integrates `refined` with Aeson, so you can write things like `count ∷ Refined Positive Int` in your data type definitions and inputs that don't satisfy the constraints will be rejected when input is processed.
+- [refined](https://nikita-volkov.github.io/refined/) for validation. Why use functions for input validation when you can use types? Magicbane integrates `refined` with Aeson, so you can write things like `count ∷ Refined Positive Int` in your data type definitions and inputs that don't satisfy the constraints will be rejected when input is processed.
 - [http-client](https://www.stackage.org/package/http-client)([-tls](https://www.stackage.org/package/http-client-tls)) for, well, making HTTP requests. Most high level HTTP client libraries are built on top of that. Magicbane provides a small composable interface based on [http-conduit](https://www.stackage.org/package/http-conduit), which lets you e.g. stream the response body directly into [an HTML parser](https://www.stackage.org/package/html-conduit).
 - [http-link-header](https://www.stackage.org/package/http-link-header) for the [HTTP `Link` header](https://tools.ietf.org/html/rfc5988#section-5), unsurprisingly.
 - [wai-cli](https://www.stackage.org/package/wai-cli) for starting Warp. Why write the same stuff in the `main` function for every new app when you can just use this one. It supports stuff people usually forget to implement there, like UNIX domain sockets, socket activation and graceful shutdown.
@@ -73,7 +73,6 @@ newtype MagicbaneApp β α = MagicbaneApp {
 ```
 
 It's Servant, wrapped in a `ReaderT`!
-Just a wrapper that provides a context.
 Combined with [data-has](https://www.stackage.org/package/data-has), this makes it possible to have a beautifully extensible context.
 
 Let's make our own context instead of using the basic one:
@@ -99,13 +98,13 @@ hello x = timed "hello" $ do
 main = do
   (_, modLogg) ← newLogger $ LogStderr defaultBufSize
   metrStore ← serverMetricStore <$> forkMetricsServer "0.0.0.0" 8800
-  metrWai ← registerWaiMetrics metrStore
   modMetr ← newMetricsWith metrStore
   let ctx = (modLogg, modMetr)
   defWaiMain $ magicbaneApp exampleAPI EmptyContext ctx hello
 ```
 
 Now we have metrics and logging instead of HTTP client and logging!
+`timed` is used here to measure how long it takes to say hello.
 
 See the `examples` directory for more examples.
 
