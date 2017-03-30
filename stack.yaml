@@ -4,6 +4,5 @@ extra-deps:
   - data-has-0.2.1.0
   - wai-cli-0.1.1
   - refined-0.1.2.1
-resolver: lts-8.5
-
-pvp-bounds: both
+resolver: lts-8.6
+pvp-bounds: none
