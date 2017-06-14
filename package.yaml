@@ -1,0 +1,70 @@
+name: magicbane
+version: '0.1.1'
+synopsis: >
+  A web framework that integrates Servant, ClassyPrelude, EKG, fast-logger, wai-cli…
+description: >
+  Inspired by Dropwizard, Magicbane provides a packaged framework for developing
+  web services using the best available libraries, including Servant, ClassyPrelude,
+  Aeson, EKG/monad-metrics, fast-logger/monad-logger, wai-cli and others.
+category: Web
+author: Greg V
+maintainer: greg@unrelenting.technology
+copyright: 2017 Greg V <greg@unrelenting.technology>
+license: PublicDomain
+github: myfreeweb/magicbane
+tested-with: GHC==8.0.2
+dependencies:
+  - base >=4.8.0.0 && <5
+  - classy-prelude
+  - transformers
+  - errors
+  - split
+  - either
+  - mtl
+  - refined
+  - lifted-async
+  - monad-control
+  - monad-metrics
+  - monad-logger
+  - fast-logger
+  - ekg-core
+  - ekg-wai
+  - data-default
+  - data-has
+  - string-conversions
+  - unordered-containers
+  - attoparsec
+  - text
+  - conduit
+  - conduit-combinators
+  - aeson
+  - aeson-qq
+  - raw-strings-qq
+  - wai
+  - wai-middleware-metrics
+  - wai-cli
+  - servant
+  - servant-server
+  - network-uri
+  - network
+  - http-types
+  - http-media
+  - http-client
+  - http-client-tls
+  - http-conduit
+  - http-link-header
+  - http-date
+  - http-api-data
+  - mime-types
+  - envy
+library:
+  source-dirs: library
+  ghc-options: -Wall
+  exposed-modules:
+    - Magicbane
+    - Magicbane.App
+    - Magicbane.Logging
+    - Magicbane.Metrics
+    - Magicbane.Validation
+    - Magicbane.HTTPClient
+    - Magicbane.Util
