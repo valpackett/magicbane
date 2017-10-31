@@ -1,8 +1,4 @@
 packages:
   - '.'
-extra-deps:
-  - data-has-0.2.1.0
-  - wai-cli-0.1.1
-  - refined-0.1.2.1
-resolver: lts-9.0
+resolver: nightly-2017-10-31
 pvp-bounds: none
