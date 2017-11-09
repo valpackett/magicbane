@@ -29,16 +29,23 @@ instance MonadBaseControl IO (MagicbaneApp β) where
 runMagicbaneHandler ∷ β → MagicbaneApp β α → Handler α
 runMagicbaneHandler ctx a = Handler $ ExceptT $ liftIO $ runHandler $ runReaderT (unMagicbaneApp a) ctx
 
+#if MIN_VERSION_servant_server(0,12,0)
+#else
 magicbaneToHandler ∷ β → MagicbaneApp β :~> Handler
 #if MIN_VERSION_servant_server(0,10,0)
 magicbaneToHandler ctx = NT $ runMagicbaneHandler ctx
 #else
 magicbaneToHandler ctx = Nat $ runMagicbaneHandler ctx
 #endif
+#endif
 
 -- | Constructs a WAI application from an API definition, a Servant context (used for auth mainly), the app context and the actual action handlers.
 magicbaneApp api sctx ctx actions = serveWithContext api sctx $ srv ctx
+#if MIN_VERSION_servant_server(0,12,0)
+  where srv c = hoistServer api (runMagicbaneHandler c) actions
+#else
   where srv c = enter (magicbaneToHandler c) actions
+#endif
 
 -- | Gets a value of any type from the context.
 askObj ∷ (Has β α, MonadReader α μ) ⇒ μ β
