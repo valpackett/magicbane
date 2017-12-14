@@ -15,7 +15,6 @@ import           ClassyPrelude as X hiding (fromString, Handler, Concurrently, r
 import           Control.Concurrent.Async.Lifted as X -- Classy reexports …Lifted.Safe which doesn't work with ExceptT
 import           Control.Error.Util as X hiding (hoistEither, (??), tryIO, bool)
 import           Control.Monad.Trans.Control as X
-import           Control.Monad.Trans.Either as X
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
 import qualified System.Envy
 import           System.Envy as X hiding ((.=), (.!=), decode)

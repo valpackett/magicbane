@@ -11,7 +11,7 @@ module Magicbane.App (
 
 import           ClassyPrelude hiding (Handler)
 import           Control.Monad.Trans.Except as X
-import           Control.Monad.Except as X (MonadError, throwError)
+import           Control.Monad.Error.Class as X (MonadError, throwError)
 import           Data.Proxy as X
 import           Data.Has as X
 import           Servant as X hiding (And)

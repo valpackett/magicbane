@@ -19,7 +19,6 @@ dependencies:
   - transformers
   - errors
   - split
-  - either
   - mtl
   - refined
   - lifted-async
