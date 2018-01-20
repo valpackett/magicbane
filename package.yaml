@@ -15,13 +15,17 @@ github: myfreeweb/magicbane
 tested-with: GHC==8.2.1
 dependencies:
   - base >=4.8.0.0 && <5
-  - classy-prelude
+  - containers
   - transformers
+  - transformers-base
+  - safe-exceptions
   - errors
   - split
   - mtl
   - refined
+  - async
   - lifted-async
+  - lifted-base
   - monad-control
   - monad-metrics
   - monad-logger
@@ -33,7 +37,9 @@ dependencies:
   - string-conversions
   - unordered-containers
   - attoparsec
+  - bytestring
   - text
+  - mono-traversable
   - conduit
   - conduit-combinators
   - aeson

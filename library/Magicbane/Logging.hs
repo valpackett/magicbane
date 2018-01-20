@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
 
 -- | Provides logging via monad-logger/fast-logger in a Magicbane app context.
 module Magicbane.Logging (
@@ -7,11 +7,14 @@ module Magicbane.Logging (
 , module X
 ) where
 
-import           ClassyPrelude
 import           Data.Has
 import           Control.Monad.Logger as X
 import           System.Log.FastLogger
 import           System.Log.FastLogger as X (LogType(..), defaultBufSize)
+-- replacing ClassyPrelude
+import           Control.Monad.IO.Class
+import           Control.Monad.Reader
+import           Data.Monoid
 
 newtype ModLogger = ModLogger (Loc → LogSource → LogLevel → LogStr → IO ())
 
@@ -27,4 +30,4 @@ newLogger logtype = do
   tc ← newTimeCache simpleTimeFormat'
   (fl, _) ← newTimedFastLogger tc logtype
   -- forget cleanup because the logger will exist for the lifetime of the (OS) process
-  return (fl, ModLogger $ \loc src lvl msg → fl (\t → toLogStr (t ++ " ") ++ defaultLogStr loc src lvl msg))
+  return (fl, ModLogger $ \loc src lvl msg → fl (\t → toLogStr (t <> " ") <> defaultLogStr loc src lvl msg))

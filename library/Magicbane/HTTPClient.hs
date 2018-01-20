@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances, ConstraintKinds #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances, ConstraintKinds #-}
 
 -- | Provides an HTTP(S) client via http-client(-tls) in a Magicbane app context.
 --   Also provides a simple composable interface for making arbitrary requests, based on http-client-conduit.
@@ -9,7 +9,6 @@ module Magicbane.HTTPClient (
 , module X
 ) where
 
-import           ClassyPrelude
 import           Control.Monad.Trans.Except
 import           Data.Has
 import           Data.Conduit
@@ -23,6 +22,15 @@ import           Network.HTTP.Client.Internal (setUri) -- The fuck?
 import           Network.HTTP.Client as X hiding (Proxy, path)
 import           Network.HTTP.Client.TLS (newTlsManager)
 import           Magicbane.Util (writeForm)
+-- replacing ClassyPrelude
+import           Control.Exception.Safe
+import           Control.Monad.IO.Class
+import           Control.Monad.Reader
+import           Control.Monad.Trans.Control
+import           Data.Bifunctor
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy as L (ByteString)
+import           Data.Text (Text, pack)
 
 newtype ModHttpClient = ModHttpClient Manager
 
@@ -39,11 +47,11 @@ runHTTP = runExceptT
 
 -- | Creates a request from a URI.
 reqU ∷ (MonadHTTP ψ μ) ⇒ URI → ExceptT Text μ Request
-reqU uri = ExceptT $ return $ bimap tshow id $ setUri defaultRequest uri
+reqU uri = ExceptT $ return $ bimap (pack.show) id $ setUri defaultRequest uri
 
 -- | Creates a request from a string of any type, parsing it into a URI.
 reqS ∷ (MonadHTTP ψ μ, ConvertibleStrings σ String) ⇒ σ → ExceptT Text μ Request
-reqS uri = ExceptT $ return $ bimap tshow id $ parseUrlThrow $ cs uri
+reqS uri = ExceptT $ return $ bimap (pack.show) id $ parseUrlThrow $ cs uri
 
 -- | Configures the request to not throw errors on error status codes.
 anyStatus ∷ (MonadHTTP ψ μ) ⇒ Request → ExceptT Text μ Request
@@ -62,12 +70,12 @@ performWithFn fn req = do
   res ← lift $ tryAny $ HCC.withResponse req $ \res → do
     body ← fn $ responseBody res
     return res { responseBody = body }
-  ExceptT $ return $ bimap tshow id res
+  ExceptT $ return $ bimap (pack.show) id res
 
 -- | Performs the request, ignoring the body.
 performWithVoid ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Text μ (Response ())
 performWithVoid = performWithFn (const $ return ())
 
 -- | Performs the request, reading the body into a lazy ByteString.
-performWithBytes ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Text μ (Response LByteString)
+performWithBytes ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Text μ (Response L.ByteString)
 performWithBytes = performWithFn ($$ C.sinkLazy)

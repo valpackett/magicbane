@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans -fno-warn-missing-signatures #-}
-{-# LANGUAGE Trustworthy, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances, GeneralizedNewtypeDeriving, LambdaCase #-}
+{-# LANGUAGE Trustworthy, NoMonomorphismRestriction, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances, LambdaCase #-}
 
 -- | A Dropwizard-inspired web framework that integrates
 --   Servant, monad-metrics/EKG, monad-logger/fast-logger, and other useful libraries
@@ -11,8 +11,6 @@ module Magicbane (
 , module Magicbane
 ) where
 
-import           ClassyPrelude as X hiding (fromString, Handler, Concurrently, runConcurrently, concurrently, mapConcurrently, async, asyncWithUnmask, asyncBound, asyncOn, asyncOnWithUnmask, race, race_, withAsync, withAsyncBound, withAsyncOn, withAsyncOnWithUnmask, withAsyncWithUnmask, cancel, cancelWith)
-import           Control.Concurrent.Async.Lifted as X -- Classy reexports …Lifted.Safe which doesn't work with ExceptT
 import           Control.Error.Util as X hiding (hoistEither, (??), tryIO, bool)
 import           Control.Monad.Trans.Control as X
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
@@ -38,6 +36,15 @@ import           Magicbane.Metrics as X
 import           Magicbane.Validation as X
 import           Magicbane.HTTPClient as X
 import           Magicbane.Util as X
+-- replacing ClassyPrelude
+import           Control.Concurrent.Lifted as X hiding (yield, throwTo)
+import qualified Control.Concurrent.Lifted as Conc (yield)
+import           Control.Concurrent.Async as X (Async, waitSTM, pollSTM, waitCatchSTM)
+import           Control.Concurrent.Async.Lifted as X
+import           Data.Text (Text)
+import           Control.Monad.Base
+import           Control.Monad.IO.Class
+import           System.IO (stderr)
 
 type Host = Header "Host" Text
 type Form = ReqBody '[FormUrlEncoded] [(Text, Text)]
@@ -67,3 +74,10 @@ newBasicContext = do
   http ← newHttpClient
   (_, logg) ← newLogger $ LogStdout defaultBufSize
   return (http, logg)
+
+-- from ClassyPrelude
+
+-- | Originally 'Conc.yield'.
+yieldThread :: MonadBase IO m => m ()
+yieldThread = Conc.yield
+{-# INLINE yieldThread #-}
