@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
+{-# LANGUAGE UnicodeSyntax, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
 
 -- | Provides metrics via monad-metrics/EKG in a Magicbane app context.
 --   Also reexports Wai metrics middleware.
@@ -8,7 +8,6 @@ module Magicbane.Metrics (
 , module X
 ) where
 
-import           ClassyPrelude
 import           Data.Has
 import qualified Control.Monad.Metrics
 import           Control.Monad.Metrics as X hiding (initialize, initializeWith, run, run')
@@ -16,6 +15,9 @@ import           System.Metrics as X (Store, registerGcMetrics)
 import qualified System.Remote.Monitoring.Wai
 import           System.Remote.Monitoring.Wai as X (serverMetricStore)
 import           Network.Wai.Metrics as X
+-- replacing ClassyPrelude
+import           Control.Monad.Reader
+import           Data.ByteString (ByteString)
 
 newtype ModMetrics = ModMetrics Metrics
 

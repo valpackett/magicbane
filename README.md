@@ -8,7 +8,6 @@ Okay, that's [Dropwizard](http://www.dropwizard.io)'s tagline. But just like Dro
 
 In particular, Magicbane combines the following libraries:
 
-- [classy-prelude](https://www.stackage.org/package/classy-prelude) for the Prelude.
 - [Warp](https://www.stackage.org/package/warp) for HTTP.
 - [Servant](http://haskell-servant.readthedocs.io/en/stable/) for REST. It lets you describe web APIs with expressive type system features and implement request handlers with simple functions. Actually somewhat similar to JAX-RS/Jersey, but instead of annotations we have types, because it's Haskell instead of Java. The main feature of Magicbane is an easy way to add *stuff* (okay, let's call it "modules") on top of Servant.
 - [Aeson](https://www.stackage.org/package/aeson) for JSON.
@@ -23,6 +22,7 @@ In particular, Magicbane combines the following libraries:
 
 Not part of Magicbane, but recommended:
 
+- [classy-prelude](https://www.stackage.org/package/classy-prelude) for the Prelude.
 - [rapid](https://www.stackage.org/package/rapid) for fast development with GHCi hot reload.
 - [hasql](https://www.stackage.org/package/hasql) for talking to PostgreSQL.
 - [html-conduit](https://www.stackage.org/package/html-conduit) for parsing HTML.
@@ -40,6 +40,7 @@ Here's a hello world service. Just a simple file you can launch with [stack scri
 {- stack runghc --package magicbane -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
+import ClassyPrelude
 
 type HelloRoute = "hello" :> QueryParam "to" Text :> Get '[PlainText] Text
 type ExampleAPI = HelloRoute
@@ -82,6 +83,7 @@ Let's make our own context instead of using the basic one:
 {- stack runghc --package magicbane -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
+import ClassyPrelude
 
 type MyAppContext = (ModLogger, ModMetrics)
 type MyApp = MagicbaneApp MyAppContext

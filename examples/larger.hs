@@ -2,6 +2,7 @@
 {- stack runghc --package magicbane -- +RTS -T -RTS -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DeriveGeneric, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
+import ClassyPrelude hiding (async)
 
 data LargeAppConf = LargeAppConf
   {              metricsPort ∷ Int

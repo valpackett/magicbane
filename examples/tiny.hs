@@ -2,6 +2,7 @@
 {- stack runghc --package magicbane -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
+import ClassyPrelude
 
 type HelloRoute = "hello" :> QueryParam "to" Text :> Get '[PlainText] Text
 type ExampleAPI = HelloRoute

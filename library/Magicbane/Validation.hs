@@ -1,13 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax #-}
+{-# LANGUAGE UnicodeSyntax #-}
 
 -- | Integrates the refinement types from the refined library with aeson.
 module Magicbane.Validation (
   module Refined
 ) where
 
-
-import           ClassyPrelude
 import           Refined
 import           Data.Aeson
 
