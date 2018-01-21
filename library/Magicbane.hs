@@ -12,6 +12,7 @@ module Magicbane (
 ) where
 
 import           Control.Error.Util as X hiding (hoistEither, (??), tryIO, bool)
+import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Control as X
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
 import qualified System.Envy
@@ -23,6 +24,7 @@ import           Data.String.Conversions as X hiding ((<>))
 import           Data.String.Conversions.Monomorphic as X
 import           Data.Aeson as X
 import           Data.Aeson.QQ as X
+import           Data.Text (Text)
 import           Text.RawString.QQ as X
 import           Network.URI as X
 import qualified Network.HTTP.Link
@@ -37,10 +39,6 @@ import           Magicbane.Metrics as X
 import           Magicbane.Validation as X
 import           Magicbane.HTTPClient as X
 import           Magicbane.Util as X
--- replacing ClassyPrelude
-import           Data.Text (Text)
-import           Control.Monad.IO.Class
-import           System.IO (stderr)
 
 type Host = Header "Host" Text
 type Form = ReqBody '[FormUrlEncoded] [(Text, Text)]
@@ -57,7 +55,7 @@ decodeEnvy = System.Envy.decode
 --   (Does environment variable reading ever fail in practice? Probably not.)
 withEnvConfig ∷ FromEnv α ⇒ (α → IO ()) → IO ()
 withEnvConfig a = decodeEnv >>= \case
-                                    Left e → hPutStrLn stderr ("error reading env: " ++ e)
+                                    Left e → hPutStrLn System.IO.stderr ("error reading env: " ++ e)
                                     Right c → a c
 
 hPutStrLn h s = liftIO $ System.IO.hPutStrLn h s

@@ -9,11 +9,19 @@ module Magicbane.HTTPClient (
 , module X
 ) where
 
+import           Control.Exception.Safe
+import           Control.Monad.IO.Class
+import           Control.Monad.Reader
+import           Control.Monad.Trans.Control
 import           Control.Monad.Trans.Except
 import           Data.Has
+import           Data.Bifunctor
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy as L (ByteString)
 import           Data.Conduit
 import qualified Data.Conduit.Combinators as C
 import           Data.String.Conversions
+import           Data.Text (Text, pack)
 import           Network.URI as X
 import           Network.HTTP.Types
 import           Network.HTTP.Conduit as HC
@@ -22,15 +30,6 @@ import           Network.HTTP.Client.Internal (setUri) -- The fuck?
 import           Network.HTTP.Client as X hiding (Proxy, path)
 import           Network.HTTP.Client.TLS (newTlsManager)
 import           Magicbane.Util (writeForm)
--- replacing ClassyPrelude
-import           Control.Exception.Safe
-import           Control.Monad.IO.Class
-import           Control.Monad.Reader
-import           Control.Monad.Trans.Control
-import           Data.Bifunctor
-import           Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as L (ByteString)
-import           Data.Text (Text, pack)
 
 newtype ModHttpClient = ModHttpClient Manager
 
