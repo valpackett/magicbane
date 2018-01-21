@@ -3,11 +3,20 @@
 -- | Various useful functions.
 module Magicbane.Util where
 
+import           Control.Arrow
+import           Control.Monad
 import           Control.Monad.Except (MonadError)
 import           Control.Error (hush)
+import qualified Data.ByteString.Lazy as L (ByteString)
 import qualified Data.HashMap.Strict as HMS
+import qualified Data.Sequences as S
 import qualified Data.Text as T
+import           Data.Text (Text)
 import           Data.Char (isSpace)
+import           Data.Foldable
+import           Data.HashMap.Strict (insertWith)
+import           Data.Maybe
+import           Data.MonoTraversable
 import           Data.String.Conversions
 import           Data.String.Conversions.Monomorphic
 import           Data.Attoparsec.Text as AP
@@ -16,16 +25,6 @@ import           Network.URI
 import           Network.HTTP.Types (hContentType)
 import           Web.FormUrlEncoded hiding (parseMaybe)
 import           Servant
--- replacing ClassyPrelude
-import           Control.Arrow
-import           Control.Monad
-import qualified Data.ByteString.Lazy as L (ByteString)
-import           Data.Foldable
-import           Data.HashMap.Strict (insertWith)
-import           Data.Maybe
-import           Data.MonoTraversable
-import qualified Data.Sequences as S
-import           Data.Text (Text)
 
 -- | Merges two JSON objects recursively. When the values are not objects, just returns the left one.
 mergeVal ∷ Value → Value → Value

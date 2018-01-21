@@ -8,13 +8,12 @@ module Magicbane.Logging (
 ) where
 
 import           Data.Has
+import           Data.Monoid
+import           Control.Monad.IO.Class
 import           Control.Monad.Logger as X
+import           Control.Monad.Reader
 import           System.Log.FastLogger
 import           System.Log.FastLogger as X (LogType(..), defaultBufSize)
--- replacing ClassyPrelude
-import           Control.Monad.IO.Class
-import           Control.Monad.Reader
-import           Data.Monoid
 
 newtype ModLogger = ModLogger (Loc → LogSource → LogLevel → LogStr → IO ())
 

@@ -9,17 +9,16 @@ module Magicbane.App (
 , module Magicbane.App
 ) where
 
-import           Control.Monad.Trans.Except as X
-import           Control.Monad.Error.Class as X (MonadError, throwError)
-import           Data.Proxy as X
-import           Data.Has as X
-import           Servant as X hiding (And)
--- replacing ClassyPrelude
 import           Control.Exception.Safe hiding (Handler)
 import           Control.Monad.Base
+import           Control.Monad.Error.Class as X (MonadError, throwError)
 import           Control.Monad.IO.Class
 import           Control.Monad.Reader
 import           Control.Monad.Trans.Control
+import           Control.Monad.Trans.Except as X
+import           Data.Proxy as X
+import           Data.Has as X
+import           Servant as X hiding (And)
 
 newtype MagicbaneApp β α = MagicbaneApp {
   unMagicbaneApp ∷ ReaderT β Handler α
