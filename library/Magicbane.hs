@@ -5,7 +5,7 @@
 --   Servant, monad-metrics/EKG, monad-logger/fast-logger, and other useful libraries
 --   to provide a smooth web service development experience.
 --
---   This module provides a ClassyPrelude based prelude with all the stuff you need reexported.
+--   This module provides all the stuff you need.
 module Magicbane (
   module X
 , module Magicbane
@@ -31,18 +31,14 @@ import           Network.HTTP.Types as X hiding (Header)
 import           Network.Wai as X (Application, Middleware)
 import           Network.Wai.Cli as X hiding (port)
 import           Magicbane.App as X hiding (Or)
+import           Magicbane.Async as X
 import           Magicbane.Logging as X
 import           Magicbane.Metrics as X
 import           Magicbane.Validation as X
 import           Magicbane.HTTPClient as X
 import           Magicbane.Util as X
 -- replacing ClassyPrelude
-import           Control.Concurrent.Lifted as X hiding (yield, throwTo)
-import qualified Control.Concurrent.Lifted as Conc (yield)
-import           Control.Concurrent.Async as X (Async, waitSTM, pollSTM, waitCatchSTM)
-import           Control.Concurrent.Async.Lifted as X
 import           Data.Text (Text)
-import           Control.Monad.Base
 import           Control.Monad.IO.Class
 import           System.IO (stderr)
 
@@ -74,10 +70,3 @@ newBasicContext = do
   http ← newHttpClient
   (_, logg) ← newLogger $ LogStdout defaultBufSize
   return (http, logg)
-
--- from ClassyPrelude
-
--- | Originally 'Conc.yield'.
-yieldThread :: MonadBase IO m => m ()
-yieldThread = Conc.yield
-{-# INLINE yieldThread #-}
