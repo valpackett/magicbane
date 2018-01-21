@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE UnicodeSyntax, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax, FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
 
 -- | Provides metrics via monad-metrics/EKG in a Magicbane app context.
 --   Also reexports Wai metrics middleware.
