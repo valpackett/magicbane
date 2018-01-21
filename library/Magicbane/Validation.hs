@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE UnicodeSyntax #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax #-}
 
 -- | Integrates the refinement types from the refined library with aeson.
 module Magicbane.Validation (
