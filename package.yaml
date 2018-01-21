@@ -15,7 +15,6 @@ github: myfreeweb/magicbane
 tested-with: GHC==8.2.1
 dependencies:
   - base >=4.8.0.0 && <5
-  - containers
   - transformers
   - transformers-base
   - safe-exceptions
@@ -48,19 +47,14 @@ dependencies:
   - wai
   - wai-middleware-metrics
   - wai-cli
-  - servant
   - servant-server
   - network-uri
-  - network
   - http-types
-  - http-media
   - http-client
   - http-client-tls
   - http-conduit
   - http-link-header
-  - http-date
   - http-api-data
-  - mime-types
   - envy
 library:
   source-dirs: library
