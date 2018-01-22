@@ -1,15 +1,15 @@
 name: magicbane
 version: '0.2.0'
 synopsis: >
-  A web framework that integrates Servant, ClassyPrelude, EKG, fast-logger, wai-cli…
+  A web framework that integrates Servant, EKG, fast-logger, wai-cli…
 description: >
   Inspired by Dropwizard, Magicbane provides a packaged framework for developing
-  web services using the best available libraries, including Servant, ClassyPrelude,
+  web services using the best available libraries, including Servant,
   Aeson, EKG/monad-metrics, fast-logger/monad-logger, wai-cli and others.
 category: Web
 author: Greg V
 maintainer: greg@unrelenting.technology
-copyright: 2017 Greg V <greg@unrelenting.technology>
+copyright: 2017-2018 Greg V <greg@unrelenting.technology>
 license: PublicDomain
 github: myfreeweb/magicbane
 tested-with: GHC==8.2.1
