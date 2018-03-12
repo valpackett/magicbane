@@ -38,7 +38,7 @@ Here's a hello world service. Just a simple file you can launch with [stack scri
 
 ```haskell
 #!/usr/bin/env stack
-{- stack runghc --package magicbane -}
+{- stack runghc --package magicbane --package classy-prelude -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
 import ClassyPrelude
@@ -81,7 +81,7 @@ Let's make our own context instead of using the basic one:
 
 ```haskell
 #!/usr/bin/env stack
-{- stack runghc --package magicbane -}
+{- stack runghc --package magicbane --package classy-prelude -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
 import ClassyPrelude

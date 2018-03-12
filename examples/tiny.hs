@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
-{- stack runghc --package magicbane -}
+{- stack runghc --package magicbane --package classy-prelude -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
 import ClassyPrelude

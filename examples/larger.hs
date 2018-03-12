@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
-{- stack runghc --package magicbane -- +RTS -T -RTS -}
+{- stack runghc --package magicbane --package classy-prelude -- +RTS -T -RTS -}
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DeriveGeneric, DataKinds, TypeOperators, TemplateHaskell #-}
 import Magicbane
 import ClassyPrelude hiding (async)
