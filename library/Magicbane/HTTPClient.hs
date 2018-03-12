@@ -10,9 +10,10 @@ module Magicbane.HTTPClient (
 ) where
 
 import           Control.Monad.Reader
-import           Control.Monad.Catch (MonadCatch)
-import           Control.Monad.Trans.Except
-import           Control.Monad.IO.Unlift (MonadUnliftIO)
+import           Control.Monad.Catch as X (MonadCatch)
+import           Control.Monad.Trans.Except as X (ExceptT (..), runExceptT)
+import qualified Control.Monad.Trans.Except as MTE
+import           Control.Monad.IO.Unlift as X (MonadUnliftIO)
 import           UnliftIO.Exception (tryAny)
 import           Data.Has
 import           Data.Bifunctor
@@ -42,7 +43,7 @@ newHttpClient = ModHttpClient <$> newTlsManager
 type MonadHTTP ψ μ = (HasHttpManager ψ, MonadReader ψ μ, MonadUnliftIO μ)
 
 runHTTP ∷ ExceptT ε μ α → μ (Either ε α)
-runHTTP = runExceptT
+runHTTP = MTE.runExceptT
 
 -- | Creates a request from a URI.
 reqU ∷ (MonadHTTP ψ μ) ⇒ URI → ExceptT Text μ Request

@@ -18,7 +18,7 @@ In particular, Magicbane combines the following libraries:
 - [refined](https://nikita-volkov.github.io/refined/) for validation. Why use functions for input validation when you can use types? Magicbane integrates `refined` with Aeson, so you can write things like `count ∷ Refined Positive Int` in your data type definitions and inputs that don't satisfy the constraints will be rejected when input is processed.
 - [http-client](https://www.stackage.org/package/http-client)([-tls](https://www.stackage.org/package/http-client-tls)) for, well, making HTTP requests. Most high level HTTP client libraries are built on top of that. Magicbane provides a small composable interface based on [http-conduit](https://www.stackage.org/package/http-conduit), which lets you e.g. stream the response body directly into [an HTML parser](https://www.stackage.org/package/html-conduit).
 - [http-link-header](https://www.stackage.org/package/http-link-header) for the [HTTP `Link` header](https://tools.ietf.org/html/rfc5988#section-5), unsurprisingly.
-- [lifted-async](https://www.stackage.org/package/lifted-async) for Servant-friendly concurrency.
+- [unliftio](https://www.stackage.org/package/unliftio) for uhhh [unlifting](https://github.com/fpco/unliftio/tree/master/unliftio#readme).
 - [wai-cli](https://www.stackage.org/package/wai-cli) for starting Warp. Why write the same stuff in the `main` function for every new app when you can just use this one. It supports stuff people usually forget to implement there, like UNIX domain sockets, socket activation and graceful shutdown.
 
 Not part of Magicbane, but recommended:

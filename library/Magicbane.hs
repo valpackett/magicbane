@@ -15,6 +15,7 @@ import           Control.Error.Util as X hiding (hoistEither, (??), err, errLn, 
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
 import           UnliftIO.Exception as X hiding (Handler)
+import           UnliftIO.Concurrent as X
 import qualified System.Envy
 import           System.Envy as X hiding ((.=), (.!=), decode)
 import qualified System.IO
@@ -33,7 +34,6 @@ import           Network.HTTP.Types as X hiding (Header)
 import           Network.Wai as X (Application, Middleware)
 import           Network.Wai.Cli as X hiding (port)
 import           Magicbane.App as X hiding (Or)
-import           Magicbane.Async as X
 import           Magicbane.Logging as X
 import           Magicbane.Metrics as X
 import           Magicbane.Validation as X

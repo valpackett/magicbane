@@ -19,7 +19,7 @@ import           Control.Monad.IO.Unlift (MonadUnliftIO)
 import           UnliftIO.Exception (try)
 import           Data.Proxy as X
 import           Data.Has as X
-import           Servant as X hiding (And)
+import           Servant as X hiding (And, Handler)
 import qualified Servant
 
 newtype MagicbaneApp β α = MagicbaneApp {

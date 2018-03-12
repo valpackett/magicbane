@@ -22,8 +22,6 @@ dependencies:
   - split
   - mtl
   - refined
-  - async
-  - lifted-async
   - lifted-base
   - unliftio-core
   - unliftio
