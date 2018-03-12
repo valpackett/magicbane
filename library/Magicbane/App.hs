@@ -35,11 +35,7 @@ runMagicbaneHandler ctx a = Servant.Handler $ ExceptT $ try $ runReaderT (unMagi
 #if MIN_VERSION_servant_server(0,12,0)
 #else
 magicbaneToHandler ∷ β → MagicbaneApp β :~> Servant.Handler
-#if MIN_VERSION_servant_server(0,10,0)
 magicbaneToHandler ctx = NT $ runMagicbaneHandler ctx
-#else
-magicbaneToHandler ctx = Nat $ runMagicbaneHandler ctx
-#endif
 #endif
 
 -- | Constructs a WAI application from an API definition, a Servant context (used for auth mainly), the app context and the actual action handlers.

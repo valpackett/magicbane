@@ -50,7 +50,7 @@ dependencies:
   - wai-middleware-metrics
   - wai-cli
   # - servant
-  - servant-server
+  - servant-server >= 0.10
   - network-uri
   # - network
   - http-types
