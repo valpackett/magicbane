@@ -17,7 +17,7 @@ dependencies:
   - base >=4.8.0.0 && <5
   - transformers
   - transformers-base
-  - safe-exceptions
+  - exceptions
   - errors
   - split
   - mtl
@@ -25,6 +25,8 @@ dependencies:
   - async
   - lifted-async
   - lifted-base
+  - unliftio-core
+  - unliftio
   - monad-control
   - monad-metrics
   - monad-logger

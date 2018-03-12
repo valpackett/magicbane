@@ -3,17 +3,19 @@
 
 -- | Provides an HTTP(S) client via http-client(-tls) in a Magicbane app context.
 --   Also provides a simple composable interface for making arbitrary requests, based on http-client-conduit.
---   That lets you plug stream parsers (e.g. html-conduit: 'performWithFn ($$ sinkDoc)') directly into the reading of the response body.
+--   That lets you plug stream parsers (e.g. html-conduit: 'performWithFn (.| sinkDoc)') directly into the reading of the response body.
 module Magicbane.HTTPClient (
   module Magicbane.HTTPClient
 , module X
 ) where
 
-import           Control.Exception.Safe
-import           Control.Monad.IO.Class
 import           Control.Monad.Reader
-import           Control.Monad.Trans.Control
+import           Control.Monad.Catch (MonadCatch)
+import           Control.Monad.Trans.Control (MonadBaseControl)
 import           Control.Monad.Trans.Except
+import           Control.Monad.IO.Class
+import           Control.Monad.IO.Unlift (MonadUnliftIO)
+import           UnliftIO.Exception (tryAny)
 import           Data.Has
 import           Data.Bifunctor
 import           Data.ByteString (ByteString)
@@ -39,7 +41,7 @@ instance (Has ModHttpClient α) ⇒ HasHttpManager α where
 newHttpClient ∷ IO ModHttpClient
 newHttpClient = ModHttpClient <$> newTlsManager
 
-type MonadHTTP ψ μ = (HasHttpManager ψ, MonadReader ψ μ, MonadIO μ, MonadBaseControl IO μ)
+type MonadHTTP ψ μ = (HasHttpManager ψ, MonadReader ψ μ, MonadIO μ, MonadBaseControl IO μ, MonadUnliftIO μ)
 
 runHTTP ∷ ExceptT ε μ α → μ (Either ε α)
 runHTTP = runExceptT
@@ -64,10 +66,10 @@ postForm form req =
              , requestBody = RequestBodyBS $ writeForm form }
 
 -- | Performs the request, using a given function to read the body. This is what all other performWith functions are based on.
-performWithFn ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ (ConduitM ι ByteString μ () → μ ρ) → Request → ExceptT Text μ (Response ρ)
+performWithFn ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ (ConduitM ι ByteString μ () → ConduitT () Void μ ρ) → Request → ExceptT Text μ (Response ρ)
 performWithFn fn req = do
   res ← lift $ tryAny $ HCC.withResponse req $ \res → do
-    body ← fn $ responseBody res
+    body ← runConduit $ fn $ responseBody res
     return res { responseBody = body }
   ExceptT $ return $ bimap (pack.show) id res
 
@@ -77,4 +79,4 @@ performWithVoid = performWithFn (const $ return ())
 
 -- | Performs the request, reading the body into a lazy ByteString.
 performWithBytes ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Text μ (Response L.ByteString)
-performWithBytes = performWithFn ($$ C.sinkLazy)
+performWithBytes = performWithFn (.| C.sinkLazy)

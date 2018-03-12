@@ -20,10 +20,12 @@ instance FromEnv LargeAppConf where
 
 type HelloRoute = "hello" :> QueryParam "to" Text :> Get '[PlainText] Text
 type SplinesRoute = "splines" :> QueryParam "count" Int :> Get '[PlainText] Text
-type ExampleAPI = HelloRoute :<|> SplinesRoute
+type ReqRoute = "req" :> Get '[PlainText] Text
+type ErrRoute = "err" :> Get '[PlainText] Text
+type ExampleAPI = HelloRoute :<|> SplinesRoute :<|> ReqRoute :<|> ErrRoute
 exampleAPI = Proxy ∷ Proxy ExampleAPI
 
-type LargeAppCtx = (ModLogger, ModMetrics, LargeAppConf)
+type LargeAppCtx = (ModLogger, ModMetrics, ModHttpClient, LargeAppConf)
 type LargeApp = MagicbaneApp LargeAppCtx
 
 hello ∷ Maybe Text → LargeApp Text
@@ -44,6 +46,17 @@ splines t = timed "app.important_work" $ do -- this easy to time an action
   $logDebug $ "Done in " ++ tshow fgTime ++ " second(s)"
   return "done"
 
+req ∷ LargeApp Text
+req = timed "app.http_request" $ do
+  resp ← runHTTP $ performWithBytes =<< reqS (asText "https://httpbin.org/get")
+  return $ case resp of
+                Right resp' → cs $ responseBody resp'
+                Left err → err
+
+showErr ∷ LargeApp Text
+showErr = timed "app.err_throwing" $ do
+  throwIO $ errText err418 "Hello World"
+
 -- This isn't a Java framework, so there's no inversion of control with magical main :)
 main = withEnvConfig $ \conf → do
   (_, modLogg) ← newLogger $ LogStderr defaultBufSize
@@ -54,7 +67,9 @@ main = withEnvConfig $ \conf → do
   metrWai ← registerWaiMetrics metrStore -- This one for the middleware
   modMetr ← newMetricsWith metrStore -- And this one for the Magicbane app (for timed/gauge/etc. calls in your actions)
 
-  let ctx = (modLogg, modMetr, conf)
+  modHc ← newHttpClient
+
+  let ctx = (modLogg, modMetr, modHc, conf)
 
   let waiMiddleware = metrics metrWai -- you can compose it with other middleware here
-  defWaiMain $ waiMiddleware $ magicbaneApp exampleAPI EmptyContext ctx $ hello :<|> splines
+  defWaiMain $ waiMiddleware $ magicbaneApp exampleAPI EmptyContext ctx $ hello :<|> splines :<|> req :<|> showErr

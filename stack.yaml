@@ -1,8 +1,4 @@
 packages:
   - '.'
-resolver: nightly-2017-11-24
-extra-deps:
-  - servant-0.12
-  - servant-server-0.12
-  - either-5
+resolver: nightly-2018-03-12
 pvp-bounds: none
