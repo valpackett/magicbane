@@ -71,13 +71,17 @@ Okay, what's `MagicbaneApp`?
 
 ```haskell
 newtype MagicbaneApp β α = MagicbaneApp {
-  unMagicbaneApp ∷ ReaderT β (ExceptT ServantErr IO) α }
+  unMagicbaneApp ∷ ReaderT β IO α }
 ```
 
-It's Servant, wrapped in a `ReaderT`!
-Combined with [data-has](https://www.stackage.org/package/data-has), this makes it possible to have a beautifully extensible context.
+It's just a `ReaderT` over `IO`!
 
-Let's make our own context instead of using the basic one:
+`ReaderT` combined with [data-has](https://www.stackage.org/package/data-has) makes it possible to have a beautifully extensible context.
+
+And why isn't there `Handler` / `ExceptT` mentioned anywhere?
+Well, [it's an antipattern](https://www.fpcomplete.com/blog/2016/11/exceptions-best-practices-haskell) that is now incompatible with [http-conduit](https://github.com/snoyberg/http-client/commit/dfbcb6c28a3216d0a69adfa9ccc8bdf62aff974d) (needs `MonadUnliftIO`) and [monad-metrics](https://github.com/parsonsmatt/monad-metrics/commit/17546b92b4e7e94279b81afe76fd6daa5f3ff0f8) (needs `MonadMask`). So Magicbane [got rid of Servant's ExceptT usage](https://www.parsonsmatt.org/2017/06/21/exceptional_servant_handling.html). To return a `servantErr`, just [`throwIO`](https://www.stackage.org/haddock/lts-10.9/unliftio-0.2.4.0/UnliftIO-Exception.html#v:throwIO) it.
+
+Anyway, let's make our own context instead of using the basic one:
 
 ```haskell
 #!/usr/bin/env stack
