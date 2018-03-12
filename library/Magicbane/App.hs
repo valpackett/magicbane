@@ -15,8 +15,8 @@ import           Control.Monad.Catch (MonadThrow, MonadCatch, MonadMask)
 import           Control.Monad.Trans.Control (MonadBaseControl)
 import           Control.Monad.Trans.Except (ExceptT (..))
 import           Control.Monad.IO.Class (MonadIO)
-import           Control.Monad.IO.Unlift
-import           UnliftIO.Exception as X hiding (Handler)
+import           Control.Monad.IO.Unlift (MonadUnliftIO)
+import           UnliftIO.Exception (try)
 import           Data.Proxy as X
 import           Data.Has as X
 import           Servant as X hiding (And)

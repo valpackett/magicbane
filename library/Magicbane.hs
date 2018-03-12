@@ -11,10 +11,10 @@ module Magicbane (
 , module Magicbane
 ) where
 
-import           Control.Error.Util as X hiding (hoistEither, (??), tryIO, bool)
+import           Control.Error.Util as X hiding (hoistEither, (??), err, errLn, tryIO, handleExceptT, syncIO, bool)
 import           Control.Monad.IO.Class
-import           Control.Monad.Trans.Control as X
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
+import           UnliftIO.Exception as X hiding (Handler)
 import qualified System.Envy
 import           System.Envy as X hiding ((.=), (.!=), decode)
 import qualified System.IO
