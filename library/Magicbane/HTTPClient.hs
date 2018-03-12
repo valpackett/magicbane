@@ -11,9 +11,7 @@ module Magicbane.HTTPClient (
 
 import           Control.Monad.Reader
 import           Control.Monad.Catch (MonadCatch)
-import           Control.Monad.Trans.Control (MonadBaseControl)
 import           Control.Monad.Trans.Except
-import           Control.Monad.IO.Class
 import           Control.Monad.IO.Unlift (MonadUnliftIO)
 import           UnliftIO.Exception (tryAny)
 import           Data.Has
@@ -41,7 +39,7 @@ instance (Has ModHttpClient α) ⇒ HasHttpManager α where
 newHttpClient ∷ IO ModHttpClient
 newHttpClient = ModHttpClient <$> newTlsManager
 
-type MonadHTTP ψ μ = (HasHttpManager ψ, MonadReader ψ μ, MonadIO μ, MonadBaseControl IO μ, MonadUnliftIO μ)
+type MonadHTTP ψ μ = (HasHttpManager ψ, MonadReader ψ μ, MonadUnliftIO μ)
 
 runHTTP ∷ ExceptT ε μ α → μ (Either ε α)
 runHTTP = runExceptT
