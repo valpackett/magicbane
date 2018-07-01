@@ -3,9 +3,9 @@
 -- | Various useful functions.
 module Magicbane.Util where
 
+import           RIO (MonadThrow, throwM)
 import           Control.Arrow
 import           Control.Monad
-import           Control.Monad.Except (MonadError)
 import           Control.Error (hush)
 import qualified Data.ByteString.Lazy as L (ByteString)
 import qualified Data.HashMap.Strict as HMS
@@ -89,5 +89,5 @@ errText e t = e { errHeaders = [ (hContentType, "text/plain; charset=utf-8") ]
                 , errBody    = t }
 
 -- | Creates and throws a simple text/plain ServantErr.
-throwErrText ∷ MonadError ServantErr μ ⇒ ServantErr → L.ByteString → μ α
-throwErrText e t = throwError $ errText e t
+throwErrText ∷ MonadThrow μ ⇒ ServantErr → L.ByteString → μ α
+throwErrText e t = throwM $ errText e t
