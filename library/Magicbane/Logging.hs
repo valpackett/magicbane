@@ -1,32 +1,43 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
 
--- | Provides logging via monad-logger/fast-logger in a Magicbane app context.
+-- | Provides logging via fast-logger in a Magicbane app context.
 module Magicbane.Logging (
   module Magicbane.Logging
 , module X
 ) where
 
+import           RIO
 import           Data.Has
-import           Data.Monoid
-import           Control.Monad.IO.Class
-import           Control.Monad.Logger as X
-import           Control.Monad.Reader
 import           System.Log.FastLogger
 import           System.Log.FastLogger as X (LogType(..), defaultBufSize)
 
-newtype ModLogger = ModLogger (Loc → LogSource → LogLevel → LogStr → IO ())
+type ModLogger = LogFunc
 
-instance (Has ModLogger α, Monad μ, MonadIO μ, MonadReader α μ) ⇒ MonadLogger μ where
-  monadLoggerLog loc src lvl msg = asks getter >>= \(ModLogger f) → liftIO (f loc src lvl $ toLogStr msg)
+instance Has ModLogger α ⇒ HasLogFunc α where
+  logFuncL = hasLens
 
-instance (Has ModLogger α, MonadIO μ, MonadReader α μ) ⇒ MonadLoggerIO μ where
-  askLoggerIO = (\(ModLogger f) → f) <$> asks getter
+type Formatter = TimedFastLogger → CallStack → LogSource → LogLevel → Utf8Builder → IO ()
 
--- | Creates a logger module. Also returns the logger itself for using outside of your Magicbane app (e.g. in some WAI middleware).
-newLogger ∷ LogType → IO (TimedFastLogger, ModLogger)
-newLogger logtype = do
+-- | Creates a logger module using a given formatting function.
+-- | Also returns the underlying TimedFastLogger for use outside of your Magicbane app (e.g. in some WAI middleware).
+newLogger ∷ LogType → Formatter → IO (TimedFastLogger, ModLogger)
+newLogger logtype formatter = do
   tc ← newTimeCache simpleTimeFormat'
   (fl, _) ← newTimedFastLogger tc logtype
   -- forget cleanup because the logger will exist for the lifetime of the (OS) process
-  return (fl, ModLogger $ \loc src lvl msg → fl (\t → toLogStr (t <> " ") <> defaultLogStr loc src lvl msg))
+  return (fl, mkLogFunc $ formatter fl)
+
+simpleFormatter ∷ Formatter
+simpleFormatter logger cs src level msg =
+  logger $ \t →
+    toLogStr t <> " " <>
+    toLogStr (utf8BuilderToText $ displayCallStack cs) <> " " <>
+    toLogStr src <> " " <>
+    toLogStr (showLevel level) <>
+    toLogStr (utf8BuilderToText msg) <> "\n"
+  where showLevel LevelDebug     = "[DEBUG] "
+        showLevel LevelInfo      = "[ INFO] "
+        showLevel LevelWarn      = "[ WARN] "
+        showLevel LevelError     = "[ERROR] "
+        showLevel (LevelOther t) = "[" <> t <> "] "

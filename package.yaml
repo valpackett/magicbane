@@ -12,9 +12,11 @@ maintainer: greg@unrelenting.technology
 copyright: 2017-2018 Greg V <greg@unrelenting.technology>
 license: PublicDomain
 github: myfreeweb/magicbane
-tested-with: GHC==8.2.1
+tested-with: GHC==8.4.2
 dependencies:
   - base >=4.8.0.0 && <5
+  - rio
+  - rio-orphans
   - transformers
   - transformers-base
   - exceptions

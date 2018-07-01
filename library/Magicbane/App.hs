@@ -1,40 +1,28 @@
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
-{-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances, GeneralizedNewtypeDeriving, CPP #-}
+{-# LANGUAGE NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances, GeneralizedNewtypeDeriving, CPP #-}
 
--- | Extends Servant with context.
---   Basically wrapping Servant in a ReaderT of your type.
---   Which should be a tuple of all your moudles and configs and stuff, so that the Data.Has module would let you access these items by type.
+-- | Extends Servant with context, based on RIO.
+--   The context should be a tuple of all your moudles and configs and stuff, so that the Data.Has module would let you access these items by type.
 module Magicbane.App (
   module X
 , module Magicbane.App
+, RIO
 ) where
 
-import           Control.Monad.Reader
-import           Control.Monad.Base (MonadBase)
-import           Control.Monad.Catch (MonadThrow, MonadCatch, MonadMask)
-import           Control.Monad.Trans.Control (MonadBaseControl)
+import           RIO
+import           RIO.Orphans as X ()
 import           Control.Monad.Trans.Except (ExceptT (..))
-import           Control.Monad.IO.Class (MonadIO)
-import           Control.Monad.IO.Unlift (MonadUnliftIO)
-import           UnliftIO.Exception (try)
 import           Data.Proxy as X
 import           Data.Has as X
 import           Servant as X hiding (And, Handler)
 import qualified Servant
 
-newtype MagicbaneApp β α = MagicbaneApp {
-  unMagicbaneApp ∷ ReaderT β IO α
-} deriving (Functor, Applicative, Monad,
-            MonadIO, MonadBase IO, MonadBaseControl IO, MonadUnliftIO,
-            MonadThrow, MonadCatch, MonadMask,
-            MonadReader β)
-
-runMagicbaneHandler ∷ β → MagicbaneApp β α → Servant.Handler α
-runMagicbaneHandler ctx a = Servant.Handler $ ExceptT $ try $ runReaderT (unMagicbaneApp a) ctx
+runMagicbaneHandler ∷ β → RIO β α → Servant.Handler α
+runMagicbaneHandler ctx a = Servant.Handler $ ExceptT $ try $ runReaderT (unRIO a) ctx
 
 #if MIN_VERSION_servant_server(0,12,0)
 #else
-magicbaneToHandler ∷ β → MagicbaneApp β :~> Servant.Handler
+magicbaneToHandler ∷ β → RIO β :~> Servant.Handler
 magicbaneToHandler ctx = NT $ runMagicbaneHandler ctx
 #endif
 

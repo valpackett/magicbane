@@ -1,8 +1,8 @@
 #!/usr/bin/env stack
-{- stack runghc --package magicbane --package classy-prelude -- +RTS -T -RTS -}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DeriveGeneric, DataKinds, TypeOperators, TemplateHaskell #-}
+{- stack runghc --package magicbane -- +RTS -T -RTS -}
+{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DeriveGeneric, DataKinds, TypeOperators #-}
+import RIO
 import Magicbane
-import ClassyPrelude
 
 data LargeAppConf = LargeAppConf
   {              metricsPort ∷ Int
@@ -26,40 +26,40 @@ type ExampleAPI = HelloRoute :<|> SplinesRoute :<|> ReqRoute :<|> ErrRoute
 exampleAPI = Proxy ∷ Proxy ExampleAPI
 
 type LargeAppCtx = (ModLogger, ModMetrics, ModHttpClient, LargeAppConf)
-type LargeApp = MagicbaneApp LargeAppCtx
+type LargeApp = RIO LargeAppCtx
 
 hello ∷ Maybe Text → LargeApp Text
-hello x = return $ "Hello " ++ (fromMaybe "anonymous" x) ++ "!"
+hello x = return $ "Hello " <> (fromMaybe "anonymous" x) <> "!"
 
 splines ∷ Maybe Int → LargeApp Text
 splines t = timed "app.important_work" $ do -- this easy to time an action
   h ← askOpt metricsBind -- notice how the LargeAppConf type isn't mentioned anywhere except, well, the type of metricsBind? :)
   p ← askOpt metricsPort -- yes, you can read properties (== call functions on) different parts of the context!
-  $logWarn $ "Reticulating splines... Check metrics at " ++ cs h ++ ":" ++ tshow p
+  logWarn $ "Reticulating splines... Check metrics at " <> displayBytesUtf8 h <> ":" <> display p
   async $ do -- this easy to fork off a background job
     let bgTime = (fromMaybe 1 t) * 2
     threadDelay $ bgTime * 1000000
-    $logDebug $ "Also done some background work in " ++ tshow bgTime ++ " second(s)"
+    logDebug $ "Also done some background work in " <> display bgTime <> " second(s)"
   let fgTime = (fromMaybe 1 t)
   threadDelay $ fgTime * 1000000
   gauge "app.important_work_last" fgTime
-  $logDebug $ "Done in " ++ tshow fgTime ++ " second(s)"
+  logDebug $ "Done in " <> display fgTime <> " second(s)"
   return "done"
 
 req ∷ LargeApp Text
 req = timed "app.http_request" $ do
-  resp ← runHTTP $ performWithBytes =<< reqS (asText "https://httpbin.org/get")
+  resp ← runHTTP $ performWithBytes =<< reqS ("https://httpbin.org/get" :: Text)
   return $ case resp of
                 Right resp' → cs $ responseBody resp'
                 Left err → err
 
 showErr ∷ LargeApp Text
 showErr = timed "app.err_throwing" $ do
-  throwIO $ errText err418 "Hello World"
+  throwM $ errText err418 "Hello World"
 
 -- This isn't a Java framework, so there's no inversion of control with magical main :)
 main = withEnvConfig $ \conf → do
-  (_, modLogg) ← newLogger $ LogStderr defaultBufSize
+  (_, modLogg) ← newLogger (LogStderr defaultBufSize) simpleFormatter
 
   -- In a serious app, you'd probably want ekg-influxdb/ekg-carbon/ekg-statsd/ekg-prometheus-adapter/…
   -- But this web interface is pretty good in development

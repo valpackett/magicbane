@@ -11,7 +11,7 @@ module Magicbane (
 , module Magicbane
 ) where
 
-import           Control.Error.Util as X hiding (hoistEither, (??), err, errLn, tryIO, handleExceptT, syncIO, bool)
+import           Control.Error.Util as X hiding ((??), err, errLn, tryIO, handleExceptT, syncIO, bool)
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Maybe as X hiding (liftListen, liftPass, liftCallCC)
 import           UnliftIO.Exception as X hiding (Handler)
@@ -61,10 +61,10 @@ withEnvConfig a = decodeEnv >>= \case
 hPutStrLn h s = liftIO $ System.IO.hPutStrLn h s
 
 type BasicContext = (ModHttpClient, ModLogger)
-type BasicApp α = MagicbaneApp BasicContext α
+type BasicApp α = RIO BasicContext α
 
 newBasicContext ∷ IO BasicContext
 newBasicContext = do
   http ← newHttpClient
-  (_, logg) ← newLogger $ LogStdout defaultBufSize
+  (_, logg) ← newLogger (LogStdout defaultBufSize) simpleFormatter
   return (http, logg)

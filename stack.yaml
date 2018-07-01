@@ -1,4 +1,8 @@
 packages:
   - '.'
-resolver: nightly-2018-03-12
+resolver: nightly-2018-06-29
+extra-deps:
+  - monad-metrics-0.2.1.1
+  - rio-orphans-0.1.1.0
+allow-newer: true
 pvp-bounds: none

@@ -1,8 +1,8 @@
 #!/usr/bin/env stack
-{- stack runghc --package magicbane --package classy-prelude -}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, TemplateHaskell #-}
+{- stack runghc --package magicbane -}
+{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators #-}
+import RIO
 import Magicbane
-import ClassyPrelude
 
 type HelloRoute = "hello" :> QueryParam "to" Text :> Get '[PlainText] Text
 type ExampleAPI = HelloRoute
@@ -10,8 +10,9 @@ exampleAPI = Proxy ∷ Proxy ExampleAPI
 
 hello ∷ Maybe Text → BasicApp Text
 hello x = do
-  $logInfo$ "Saying hello to " ++ tshow x
-  return $ "Hello " ++ (fromMaybe "anonymous" x) ++ "!"
+  let x' = fromMaybe "anonymous" x
+  logInfo $ "Saying hello to " <> display x'
+  return $ "Hello " <> x' <> "!"
 
 main = do
   ctx ← newBasicContext

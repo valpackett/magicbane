@@ -17,4 +17,4 @@ instance (FromJSON α, Predicate ρ α) ⇒ FromJSON (Refined ρ α) where
     res ← parseJSON x
     case refine res of
       Right v → return v
-      Left e → fail e
+      Left e → fail $ show e
