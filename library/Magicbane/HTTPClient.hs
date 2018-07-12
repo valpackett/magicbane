@@ -15,10 +15,11 @@ import           Control.Monad.Trans.Except as X (ExceptT (..), runExceptT)
 import qualified Control.Monad.Trans.Except as MTE
 import           Control.Monad.IO.Unlift as X (MonadUnliftIO)
 import           UnliftIO.Exception (tryAny)
+import           Data.Aeson (ToJSON, encode)
 import           Data.Has
 import           Data.Bifunctor
 import           Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as L (ByteString)
+import qualified Data.ByteString.Lazy as L (ByteString, toStrict)
 import           Data.Conduit
 import qualified Data.Conduit.Combinators as C
 import           Data.String.Conversions
@@ -63,6 +64,13 @@ postForm form req =
   return req { method = "POST"
              , requestHeaders = [ (hContentType, "application/x-www-form-urlencoded; charset=utf-8") ]
              , requestBody = RequestBodyBS $ writeForm form }
+
+-- | Sets a JSON value as the request body (via ToJSON; also sets the content-type).
+postJson :: (MonadHTTP ψ μ, ToJSON α) ⇒ α → Request → ExceptT Text μ Request
+postJson body req =
+  return req { method = "POST"
+             , requestHeaders = [ (hContentType, "application/json; charset=utf-8") ]
+             , requestBody = RequestBodyBS . L.toStrict . encode $ body }
 
 -- | Performs the request, using a given function to read the body. This is what all other performWith functions are based on.
 performWithFn ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ (ConduitM ι ByteString μ () → ConduitT () Void μ ρ) → Request → ExceptT Text μ (Response ρ)
