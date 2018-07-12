@@ -92,6 +92,7 @@ performWithVoid = performWithFn (const $ return ())
 performWithBytes ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Text μ (Response L.ByteString)
 performWithBytes = performWithFn (.| C.sinkLazy)
 
+-- | Add headers to the request, preserving any existing headers not specified in the new set.
 applyHeaders :: RequestHeaders → Request → Request
 applyHeaders headers req =
   req { requestHeaders = updated }
@@ -100,6 +101,7 @@ applyHeaders headers req =
     new = M.fromList headers
     old = M.fromList $ requestHeaders req
 
+-- | Remove listed headers from the request.
 removeHeaders :: [HeaderName] → Request → Request
 removeHeaders headerNames req =
   req { requestHeaders = updated }
