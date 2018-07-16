@@ -22,7 +22,7 @@ import qualified System.IO
 import           Data.Default as X
 import           Data.List.Split as X (splitOn)
 import           Data.String.Conversions as X hiding ((<>))
-import           Data.String.Conversions.Monomorphic as X
+import           Data.String.Conversions.Monomorphic as X hiding (fromString)
 import           Data.Aeson as X
 import           Data.Aeson.QQ as X
 import           Data.Text (Text)
