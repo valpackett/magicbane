@@ -37,7 +37,7 @@ import           Magicbane.Util (writeForm)
 
 newtype ModHttpClient = ModHttpClient Manager
 
-instance (Has ModHttpClient α) ⇒ HasHttpManager α where
+instance {-# OVERLAPPABLE #-} (Has ModHttpClient α) ⇒ HasHttpManager α where
   getHttpManager = (\(ModHttpClient m) → m) <$> getter
 
 newHttpClient ∷ IO ModHttpClient
