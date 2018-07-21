@@ -14,7 +14,7 @@ import           System.Log.FastLogger as X (LogType(..), defaultBufSize)
 
 type ModLogger = LogFunc
 
-instance Has ModLogger α ⇒ HasLogFunc α where
+instance {-# OVERLAPPABLE #-} Has ModLogger α ⇒ HasLogFunc α where
   logFuncL = hasLens
 
 type Formatter = TimedFastLogger → CallStack → LogSource → LogLevel → Utf8Builder → IO ()
