@@ -64,7 +64,7 @@ postForm form req = return
         [ (hContentType, "application/x-www-form-urlencoded; charset=utf-8") ]
 
 -- | Sets a JSON value as the request body (via ToJSON; also sets the content-type).
-postJson :: (MonadHTTP ψ μ, ToJSON α) ⇒ α → Request → ExceptT Text μ Request
+postJson ∷ (MonadHTTP ψ μ, ToJSON α) ⇒ α → Request → ExceptT Text μ Request
 postJson body req = return
   $ req { method = "POST"
         , requestBody = RequestBodyBS . L.toStrict . encode $ body }
@@ -88,7 +88,7 @@ performWithBytes ∷ (MonadHTTP ψ μ, MonadCatch μ) ⇒ Request → ExceptT Te
 performWithBytes = performWithFn (.| C.sinkLazy)
 
 -- | Add headers to the request, preserving any existing headers not specified in the new set.
-applyHeaders :: RequestHeaders → Request → Request
+applyHeaders ∷ RequestHeaders → Request → Request
 applyHeaders headers req =
   req { requestHeaders = updated }
   where
@@ -97,7 +97,7 @@ applyHeaders headers req =
     old = M.fromList $ requestHeaders req
 
 -- | Remove listed headers from the request.
-removeHeaders :: [HeaderName] → Request → Request
+removeHeaders ∷ [HeaderName] → Request → Request
 removeHeaders headerNames req =
   req { requestHeaders = updated }
   where
