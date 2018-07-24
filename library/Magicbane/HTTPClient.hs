@@ -1,4 +1,4 @@
-{-# LANGUAGE Trustworthy, NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances, ConstraintKinds #-}
+{-# LANGUAGE Trustworthy, NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, ConstraintKinds #-}
 
 -- | Provides an HTTP(S) client via http-client(-tls) in a Magicbane app context.
 --   Also provides a simple composable interface for making arbitrary requests, based on http-client-conduit.

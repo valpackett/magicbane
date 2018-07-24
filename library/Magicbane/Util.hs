@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax, DataKinds, FlexibleContexts #-}
 
 -- | Various useful functions and type definitions.
 module Magicbane.Util where

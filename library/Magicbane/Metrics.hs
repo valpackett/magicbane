@@ -1,4 +1,4 @@
-{-# LANGUAGE UnicodeSyntax, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE UnicodeSyntax #-}
 
 -- | Provides metrics via monad-metrics/EKG in a Magicbane app context.
 --   Also reexports Wai metrics middleware.
