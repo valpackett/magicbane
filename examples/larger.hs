@@ -9,10 +9,10 @@ data LargeAppConf = LargeAppConf
   ,              metricsBind ∷ ByteString
   } deriving (Generic, Show)
 
-instance Default LargeAppConf where
-  def = LargeAppConf {
-        metricsPort = 8090
-      , metricsBind = "0.0.0.0" }
+instance DefConfig LargeAppConf where
+  defConfig = LargeAppConf {
+              metricsPort = 8090
+            , metricsBind = "0.0.0.0" }
 
 instance FromEnv LargeAppConf where
   fromEnv = gFromEnvCustom Option { dropPrefixCount = 0, customPrefix = "LARGEAPP" }

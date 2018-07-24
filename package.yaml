@@ -33,7 +33,6 @@ dependencies:
   - fast-logger
   - ekg-core
   - ekg-wai
-  - data-default
   - data-has
   - string-conversions
   - unordered-containers

@@ -19,7 +19,6 @@ import           UnliftIO.Concurrent as X
 import qualified System.Envy
 import           System.Envy as X hiding ((.=), (.!=), decode)
 import qualified System.IO
-import           Data.Default as X
 import           Data.List.Split as X (splitOn)
 import           Data.String.Conversions as X hiding ((<>))
 import           Data.String.Conversions.Monomorphic as X hiding (fromString)
@@ -45,9 +44,6 @@ type Form = ReqBody '[FormUrlEncoded] [(Text, Text)]
 
 type HTTPLink = Network.HTTP.Link.Link
 type WithLink α = (Headers '[Header "Link" [HTTPLink]] α)
-
-instance (Default α) ⇒ DefConfig α where
-  defConfig = def
 
 decodeEnvy = System.Envy.decode
 
