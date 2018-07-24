@@ -1,5 +1,4 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE OverloadedStrings, UnicodeSyntax #-}
 
 -- | Provides logging via fast-logger in a Magicbane app context.
 module Magicbane.Logging (
@@ -8,14 +7,10 @@ module Magicbane.Logging (
 ) where
 
 import           RIO
-import           Data.Has
 import           System.Log.FastLogger
 import           System.Log.FastLogger as X (LogType(..), defaultBufSize)
 
 type ModLogger = LogFunc
-
-instance {-# OVERLAPPABLE #-} Has ModLogger α ⇒ HasLogFunc α where
-  logFuncL = hasLens
 
 type Formatter = TimedFastLogger → CallStack → LogSource → LogLevel → Utf8Builder → IO ()
 

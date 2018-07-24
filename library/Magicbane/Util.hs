@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings, UnicodeSyntax, DataKinds, TypeOperators, MultiParamTypeClasses, TypeFamilies, FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
 
--- | Various useful functions.
+-- | Various useful functions and type definitions.
 module Magicbane.Util where
 
-import           RIO (MonadThrow, throwM)
+import           RIO (MonadThrow, throwM, MonadIO, liftIO)
 import           Control.Arrow
 import           Control.Monad
 import           Control.Error (hush)
+import qualified System.IO
 import qualified Data.ByteString.Lazy as L (ByteString)
 import qualified Data.HashMap.Strict as HMS
 import qualified Data.Sequences as S
@@ -23,8 +24,18 @@ import           Data.Attoparsec.Text as AP
 import           Data.Aeson
 import           Network.URI
 import           Network.HTTP.Types (hContentType)
-import           Web.FormUrlEncoded hiding (parseMaybe)
+import qualified Network.HTTP.Link
+import           Web.FormUrlEncoded
 import           Servant
+
+type Host = Header "Host" Text
+type Form = ReqBody '[FormUrlEncoded] [(Text, Text)]
+
+type HTTPLink = Network.HTTP.Link.Link
+type WithLink α = (Headers '[Header "Link" [HTTPLink]] α)
+
+hPutStrLn ∷ MonadIO μ ⇒ System.IO.Handle → String → μ ()
+hPutStrLn h s = liftIO $ System.IO.hPutStrLn h s
 
 -- | Merges two JSON objects recursively. When the values are not objects, just returns the left one.
 mergeVal ∷ Value → Value → Value
@@ -40,7 +51,7 @@ readForm ∷ (ConvertibleStrings Text α, ConvertibleStrings Text β, Convertibl
 readForm x = map (fromST *** fromST) <$> hush (mimeUnrender (Proxy ∷ Proxy FormUrlEncoded) $ toLBS x)
 
 -- | Reads a Servant incoming form as a list of key-value pairs (for use in FromForm instances).
-formList ∷ Form → [(Text, Text)]
+formList ∷ Web.FormUrlEncoded.Form → [(Text, Text)]
 formList = fromMaybe [] . hush . fromForm
 
 -- | Converts a flat key-value form with keys in typical nesting syntax (e.g. "one[two][three]") to an Aeson Value with nesting (for use in FromForm instances).

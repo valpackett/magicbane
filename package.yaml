@@ -68,6 +68,8 @@ library:
   exposed-modules:
     - Magicbane
     - Magicbane.App
+    - Magicbane.Config
+    - Magicbane.Has
     - Magicbane.Logging
     - Magicbane.Metrics
     - Magicbane.Validation

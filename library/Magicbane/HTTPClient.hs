@@ -1,5 +1,4 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances, ConstraintKinds #-}
+{-# LANGUAGE Trustworthy, NoImplicitPrelude, OverloadedStrings, UnicodeSyntax, FlexibleContexts, FlexibleInstances, UndecidableInstances, ConstraintKinds #-}
 
 -- | Provides an HTTP(S) client via http-client(-tls) in a Magicbane app context.
 --   Also provides a simple composable interface for making arbitrary requests, based on http-client-conduit.
@@ -18,7 +17,6 @@ import qualified Control.Monad.Trans.Except as MTE
 import           Control.Monad.IO.Unlift as X (MonadUnliftIO)
 import           UnliftIO.Exception (tryAny)
 import           Data.Aeson (ToJSON, encode)
-import           Data.Has
 import           Data.Bifunctor
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as L (ByteString, toStrict)
@@ -36,9 +34,6 @@ import           Network.HTTP.Client.TLS (newTlsManager)
 import           Magicbane.Util (writeForm)
 
 newtype ModHttpClient = ModHttpClient Manager
-
-instance {-# OVERLAPPABLE #-} (Has ModHttpClient α) ⇒ HasHttpManager α where
-  getHttpManager = (\(ModHttpClient m) → m) <$> getter
 
 newHttpClient ∷ IO ModHttpClient
 newHttpClient = ModHttpClient <$> newTlsManager
