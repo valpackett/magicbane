@@ -1,7 +1,9 @@
 packages:
   - '.'
-resolver: nightly-2018-07-05
+resolver: nightly-2018-09-18
 extra-deps:
   - monad-metrics-0.2.1.2
   - rio-orphans-0.1.1.0
+  - ekg-wai-0.1.0.3
+  - ekg-json-0.1.0.6
 pvp-bounds: none
