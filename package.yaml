@@ -1,5 +1,5 @@
 name: magicbane
-version: '0.3.0'
+version: '0.4.0'
 synopsis: >
   A web framework that integrates Servant, RIO, EKG, fast-logger, wai-cli…
 description: >
