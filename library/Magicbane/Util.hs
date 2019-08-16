@@ -94,11 +94,11 @@ slugify = T.filter (not . isSpace) . T.intercalate "-" . T.words .
           T.filter (`onotElem` ("!^*?()[]{}`./\\'\"~|"::String)) .
           T.toLower . T.strip
 
--- | Creates a simple text/plain ServantErr.
-errText ∷ ServantErr → L.ByteString → ServantErr
+-- | Creates a simple text/plain ServerError
+errText ∷ ServerError → L.ByteString → ServerError
 errText e t = e { errHeaders = [ (hContentType, "text/plain; charset=utf-8") ]
                 , errBody    = t }
 
--- | Creates and throws a simple text/plain ServantErr.
-throwErrText ∷ MonadThrow μ ⇒ ServantErr → L.ByteString → μ α
+-- | Creates and throws a simple text/plain ServerError.
+throwErrText ∷ MonadThrow μ ⇒ ServerError → L.ByteString → μ α
 throwErrText e t = throwM $ errText e t
