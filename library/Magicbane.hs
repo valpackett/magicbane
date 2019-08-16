@@ -29,7 +29,7 @@ import           Network.URI as X
 import           Network.HTTP.Link as X hiding (Link)
 import           Network.HTTP.Types as X hiding (Header)
 import           Network.Wai as X (Application, Middleware)
-import           Network.Wai.Cli as X hiding (port)
+import           Network.Wai.Cli as X
 import           Magicbane.App as X hiding (Or)
 import           Magicbane.Config as X
 import           Magicbane.Has as X
