@@ -9,5 +9,7 @@ extra-deps:
   - wai-cli-0.2.0
   - refined-0.4.2.2
   - QuickCheck-2.12.6.1
+  - servant-server-0.18
+  - servant-0.18
 
 pvp-bounds: none
