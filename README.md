@@ -21,7 +21,7 @@ In particular, Magicbane combines the following libraries:
 - [envy](https://www.stackage.org/package/envy) for configuration. [Store config in environment variables](https://12factor.net/config)!
 - [fast-logger](https://www.stackage.org/package/fast-logger) for logging. Integrated into RIO's logging API, and `monad-logger` as well for libraries that use it.
 - [EKG](https://www.stackage.org/package/ekg)+[monad-metrics](https://www.stackage.org/package/monad-metrics) for metrics. `monad-metrics` lets you easily measure things in your application: just use `label`/`counter`/`distribution`/`gauge`/`timed` in your handlers. The EKG ecosystem has backends for [InfluxDB](https://www.stackage.org/package/ekg-influxdb), [Carbon (Graphite)](https://www.stackage.org/package/ekg-carbon), [statsd](https://www.stackage.org/package/ekg-statsd), [Prometheus](https://www.stackage.org/package/ekg-prometheus-adapter) and others… And a simple local [web server](https://www.stackage.org/package/ekg-wai) for development.
-- [refined](https://nikita-volkov.github.io/refined/) for validation. Why use functions for input validation when you can use types? Magicbane integrates `refined` with Aeson, so you can write things like `count ∷ Refined Positive Int` in your data type definitions and inputs that don't satisfy the constraints will be rejected when input is processed.
+- [refined](https://nikita-volkov.github.io/refined/) for validation. Why use functions for input validation when you can use types?
 - [http-client](https://www.stackage.org/package/http-client)([-tls](https://www.stackage.org/package/http-client-tls)) for, well, making HTTP requests. Most high level HTTP client libraries are built on top of that. Magicbane provides a small composable interface based on [http-conduit](https://www.stackage.org/package/http-conduit), which lets you e.g. stream the response body directly into [an HTML parser](https://www.stackage.org/package/html-conduit).
 - [http-link-header](https://www.stackage.org/package/http-link-header) for the [HTTP `Link` header](https://tools.ietf.org/html/rfc5988#section-5), unsurprisingly.
 - [unliftio](https://www.stackage.org/package/unliftio) for uhhh [unlifting](https://github.com/fpco/unliftio/tree/master/unliftio#readme).
@@ -36,6 +36,8 @@ Not part of Magicbane, but recommended:
 - [pcre-heavy](https://www.stackage.org/package/pcre-heavy) for regular expressions.
 
 Magicbane was extracted from [Sweetroll](https://github.com/myfreeweb/sweetroll).
+
+
 
 ## Usage
 
@@ -112,6 +114,10 @@ Now we have metrics and logging instead of HTTP client and logging!
 `timed` is used here to measure how long it takes to say hello.
 
 See the `examples` directory for more examples.
+
+## A note regarding the `refined` library
+
+The `refined` library provides a way of working with  Refinement Types, so you can write things like `count ∷ Refined Positive Int` to give you a compile-time guarantee that count is a Positive Integer. Magicbane originally extended the `refined` library by intergating with Aeson, for validating JSON at type boundaries e.g. to refine/sanitise an unrefined external input to its refined internal type. This Aeson integration is now provided natively by the `refined` library, so now we just re-export `refined` here, for convenience.
 
 ## Development
 
